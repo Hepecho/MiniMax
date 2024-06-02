@@ -14,8 +14,11 @@ data_dir = "data/GSM8K/grade_school_math/data"
 log_dir = "log/GSM8K"
 """
 cot 4-shot Acc = 78.24109173616375% and count = 1319
-ltm 7 + 4 shot Acc = 70.55555555555556 % and count = 360
-ltm 7 + 4 shot Acc = 75.17006802721087 % and count == 294
+cot 4-shot Acc = 70.55555555555556 % and count = 360
+ltm 7 + 4 shot Acc = 81.11111111111111 % and count = 360
+n-step count list = [360, 104, 96, 80, 80]
+cot acc list = [70.55555555555556, 87.5, 72.91666666666666, 61.25000000000001, 55.00000000000001]
+ltm acc list = [81.11111111111111, 94.23076923076923, 81.25, 71.25, 73.75]
 """
 
 
@@ -194,10 +197,10 @@ def test_prompt(method, shot_num):
     for id, line in enumerate(test_json_str):
 
         correct = history_df.iloc[id, -1]
-        if correct >= 0:
-            correct_count += correct
-            count += 1
-        continue
+        # if correct >= 0:
+        #     correct_count += correct
+        #     count += 1
+        # continue
         if correct >= -1:
             continue
         # correct == -2 表示该条目未测试 或 ltm 1st error
@@ -266,9 +269,6 @@ def correct_metric(method, shot_num):
     with open(ospj(data_dir, f'test{suffix}.jsonl'), "r") as f:
         test_json_str = f.readlines()
 
-    with open(ospj(data_dir, f'train{suffix}.jsonl'), "r") as f:
-        train_json_str = f.readlines()
-
     correct_count = 0
     count = 0
     for id, line in enumerate(test_json_str):
@@ -325,10 +325,53 @@ def correct_metric(method, shot_num):
     history_df.to_csv(history_path, index=False)
 
 
+def equal_samples(shot_num):
+    cot_history_path = ospj(log_dir, f'cot_{shot_num}shot', 'history.csv')
+    ltm_history_path = ospj(log_dir, f'ltm_{shot_num}shot', 'history.csv')
+    cot_history_df = pd.read_csv(cot_history_path)
+    ltm_history_df = pd.read_csv(ltm_history_path)
+
+    with open(ospj(data_dir, f'test_socratic.jsonl'), "r") as f:
+        test_json_str = f.readlines()
+
+    cot_correct_count, ltm_correct_count = [0] * 5, [0] * 5
+    step_count = [0] * 5  # all, 2-step, 3-step, 4-step, >=5 step
+
+    for id, line in enumerate(test_json_str):
+        test_json = json.loads(line)
+        question = test_json['question']
+        original_question = question.split('.')[-1].strip()
+        answer = test_json['answer']
+        lines = answer.split("\n")
+        sub_questions = []
+        for line in lines[:-1]:
+            sub_question = line.split("**")[0].strip()
+            sub_questions.append(f"\"{sub_question}\"")
+        step_num = len(sub_questions)
+        cot_correct = cot_history_df.iloc[id, -1]
+        ltm_correct = ltm_history_df.iloc[id, -1]
+        if ltm_correct >= 0 and cot_correct >= 0:
+            step_count[0] += 1
+            ltm_correct_count[0] += cot_correct
+            cot_correct_count[0] += ltm_correct
+
+            idx = min(step_num - 1, 4)
+            step_count[idx] += 1
+            ltm_correct_count[idx] += cot_correct
+            cot_correct_count[idx] += ltm_correct
+
+    cot_acc = [x / y * 100 for x, y in zip(cot_correct_count, step_count)]
+    ltm_acc = [x / y * 100 for x, y in zip(ltm_correct_count, step_count)]
+    print(f'n-step count list = {step_count}')
+    print(f'cot acc list = {cot_acc}')
+    print(f'ltm acc list = {ltm_acc}')
+
+
 if __name__ == '__main__':
     args = args_parser()
     random.seed(args.seed)
     # test_prompt(args.method, args.shot_num)
-    correct_metric(args.method, args.shot_num)
+    # correct_metric(args.method, args.shot_num)
+    equal_samples(args.shot_num)
 
 

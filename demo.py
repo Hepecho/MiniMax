@@ -24,18 +24,8 @@ class ChatBot:
         self.temperature = temperature
         if self.temperature is not None:
             self.request_body['temperature'] = self.temperature
-        self.group_id = "1768537645828293239"
-        self.api_key = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJHcm91cE5hbWUiOiLpu4TlhYPmlY8iLCJVc2VyTm" \
-                       "FtZSI6IndoaXR6YXJkQUlMYWJzIiwiQWNjb3VudCI6IndoaXR6YXJkQUlMYWJzQDE3Njg1Mzc2NDU4M" \
-                       "jgyOTMyMzkiLCJTdWJqZWN0SUQiOiIxNzY1OTg0MTMxNDgyNjU2ODQ4IiwiUGhvbmUiOiIiLCJHcm91" \
-                       "cElEIjoiMTc2ODUzNzY0NTgyODI5MzIzOSIsIlBhZ2VOYW1lIjoiIiwiTWFpbCI6IiIsIkNyZWF0ZVR" \
-                       "pbWUiOiIyMDI0LTA0LTI4IDExOjAxOjU0IiwiaXNzIjoibWluaW1heCJ9.hZqCtDwZDcZLbdUETmZXa" \
-                       "BdF8uO7CVbl32mAnCi5kjflN1t5G53CtrNbv5-1cZph2IX7xAZSeAjEgq0Ga8rBJWvQ-" \
-                       "H4gjNwKg3Mr1i33VuRb96QJSuz79GA6FLBo3DHBEnkLRazZafINXpEr_fUcPeK8vTCW5vpfxsJveMKm" \
-                       "yIeuuw5NdZmh1vpanVrEOyRWvhlOd7CK8P_CwQkyFUK-" \
-                       "dSJz8qUNSwFki1KlgVJ8wdRNFw0M6RHOl7B1M66iQw10TFy0mHAX3usRUJTzH-" \
-                       "S2LNSJLdQ5L5Ln0knfAWmhCQma-6DPCXUHHqR7kius09-z5NLEQSq8jDtqB07qMEHl5Q"
-        self.url = f"https://api.minimax.chat/v1/text/chatcompletion_pro?GroupId={self.group_id}"
+        self.group_id = "yourgroupid"
+        self.api_key = "yourapikey"
         self.headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
 
     def chat(self, line):
