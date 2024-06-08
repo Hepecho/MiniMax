@@ -26,6 +26,7 @@ class ChatBot:
             self.request_body['temperature'] = self.temperature
         self.group_id = "yourgroupid"
         self.api_key = "yourapikey"
+        self.url = f"https://api.minimax.chat/v1/text/chatcompletion_pro?GroupId={self.group_id}"
         self.headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
 
     def chat(self, line):

@@ -65,7 +65,7 @@ class CEval(Dataset):
 def args_parser():
     parser = argparse.ArgumentParser(description='GTE for Classification')
     parser.add_argument('--seed', type=int, default=1, help='random seed (default: 1)')
-    parser.add_argument('--batch_size', type=int, default=64, help='batch size (default: 128)')
+    parser.add_argument('--batch_size', type=int, default=64, help='batch size (default: 64)')
     parser.add_argument('--epochs', type=int, default=10, help='epochs (default: 100)')
     parser.add_argument('--learning_rate', type=float, default=0.01, help='learning rate (default: 0.01)')
     parser.add_argument('--device', type=str, default='cuda', help='device (default: cuda)')
@@ -141,11 +141,9 @@ def evaluate(model, iterator, criterion, device):
 
 def train_classifier(args, classifier, optimizer, criterion):
     # 准备数据集
-    train_dataset = CEval(data_dir, train=True)  # 25000
-    test_dataset = CEval(data_dir, train=False)  # 25000
+    train_dataset = CEval(data_dir, train=True)
+    test_dataset = CEval(data_dir, train=False)
     num_train = int(len(train_dataset) * 0.90)
-    # print(len(train_dataset)) 25000
-    # exit()
     train_dataset, valid_dataset = random_split(train_dataset, [num_train, len(train_dataset) - num_train])
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)  # 没有传入collate_fn，不需要padding
     valid_loader = DataLoader(valid_dataset, batch_size=args.batch_size, shuffle=True)

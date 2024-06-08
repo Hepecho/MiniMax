@@ -94,21 +94,11 @@ def ltm_shot_2nd(botx, train_json_str, shot_num):
             messages.append({"sender_type": "USER", "sender_name": botx.user_name, "text": sub_question})
             messages.append({"sender_type": "BOT", "sender_name": botx.bot_name, "text": sub_answer})
 
-        # reply = f"To answer the question \"{original_question}\", we need to know: " + ", ".join(sub_questions) + "."
-        # # answer = re.sub('####', 'The answer is', answer)
-        # messages.append({"sender_type": "USER", "sender_name": botx.user_name, "text": question})
-        # messages.append({"sender_type": "BOT", "sender_name": botx.bot_name, "text": reply})
     botx.reset_messages(messages)
 
 
 def cot_ask_bot(botx, line):
     reply = botx.chat(line)
-    # ans = re.findall('answer is \d+', reply, re.I)
-    # reply = reply.strip(".")
-    # reply_slides = reply.split()
-    # for rs in reversed(reply_slides):
-    #     re = re.strip("%$")
-    #     result = re.search('-*\d*\.*\d+$', re)
     result = re.search('-*\d*\.*\d+$', reply.strip(".%$"))
     try_times = 0
     while result is None:
@@ -197,10 +187,6 @@ def test_prompt(method, shot_num):
     for id, line in enumerate(test_json_str):
 
         correct = history_df.iloc[id, -1]
-        # if correct >= 0:
-        #     correct_count += correct
-        #     count += 1
-        # continue
         if correct >= -1:
             continue
         # correct == -2 表示该条目未测试 或 ltm 1st error
