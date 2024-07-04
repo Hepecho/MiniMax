@@ -30,7 +30,7 @@ class ChatBot:
             self.request_body['temperature'] = self.temperature
         if functions is not None:
             self.request_body['functions'] = functions
-        self.group_id = "yourgroupkey"
+        self.group_id = "yourgroupid"
         self.api_key = "yourapikey"
         self.url = f"https://api.minimax.chat/v1/text/chatcompletion_pro?GroupId={self.group_id}"
         self.headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
@@ -57,13 +57,12 @@ class ChatBot:
         response = requests.post(self.url, headers=self.headers, json=self.request_body)
         assert response.status_code == 200
         json_resp = response.json()
-        reply = json_resp["reply"]
         assert json_resp["base_resp"]["status_code"] == 0
         # assert json_resp["function_call"]["name"] == "mention_something"
         assert json_resp["function_call"]["arguments"] != ""
 
         arguments = json.loads(json_resp["function_call"]["arguments"])
-        files = {"file": ("frame.jpg", '我要传输的内容就是这句废话', "text/plain")}
+        print(arguments)
         argument_list = []
         for k in arguments.keys():
             value = quote(arguments[k], 'utf-8')
